@@ -6,11 +6,15 @@ namespace DataAccessLayer
 {
     public class DataService
     {
-        public IList<Category> GetCategories()
+        public IList<Category> GetCategories(int page, int pageSize)
         {
             using (var db = new NorthwindContext())
             {
-                return db.Categories.ToList();
+                return db.Categories
+                    .OrderBy(x => x.Id)
+                    .Skip(page*pageSize)
+                    .Take(pageSize)
+                    .ToList();
             }
         }
 

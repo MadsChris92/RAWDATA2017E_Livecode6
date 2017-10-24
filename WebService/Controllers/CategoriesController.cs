@@ -11,10 +11,13 @@ namespace WebService.Controllers
     public class CategoriesController : Controller
     {
         [HttpGet]
-        public IActionResult GetCategories()
+        public IActionResult GetCategories(int page = 0, int pageSize = 2)
         {
+            if (pageSize > 50) pageSize = 50;
+            //pageSize = pageSize > 50 ? 50 : pageSize;
+
             var ds = new DataService();
-            return Ok(ds.GetCategories());
+            return Ok(ds.GetCategories(page, pageSize));
         }
     }
 }
