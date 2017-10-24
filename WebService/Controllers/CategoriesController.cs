@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DataAccessLayer;
 using Microsoft.AspNetCore.Mvc;
+using WebService.Models;
 
 namespace WebService.Controllers
 {
@@ -26,7 +27,12 @@ namespace WebService.Controllers
             var total = _dataService.GetNumberOfCategories();
             var totalPages = (int)Math.Ceiling(total / (double)pageSize);
 
-            var data = _dataService.GetCategories(page, pageSize);
+            var data = _dataService.GetCategories(page, pageSize)
+                .Select(x => new SimpleCategoryModel
+                {
+                    Url = Url.Link(nameof(GetCategory), new { id = x.Id }),
+                    Name = x.Name
+                });
 
             
 
