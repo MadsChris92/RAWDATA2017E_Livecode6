@@ -8,5 +8,7 @@ namespace DataAccessLayer
         Category GetCategory(int id);
 
         int GetNumberOfCategories();
+
+        bool UpdateCategory(Category category);
     }
 }

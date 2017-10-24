@@ -33,5 +33,10 @@ namespace DataAccessLayer
                 return db.Categories.Count();
             }
         }
+
+        public bool UpdateCategory(Category category)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

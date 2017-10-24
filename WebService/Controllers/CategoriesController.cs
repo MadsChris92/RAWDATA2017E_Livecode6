@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using DataAccessLayer;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using WebService.Models;
 
@@ -36,16 +37,14 @@ namespace WebService.Controllers
                     Name = x.Name
                 });
 
-            var route = nameof(GetCategories);
-
             var result = new
             {
                 Total = total,
                 Pages = totalPages,
                 Page = page,
-                Prev = Link(route, page, pageSize, -1, () => page > 0),
-                Next = Link(route, page, pageSize, 1, () => page < totalPages - 1),
-                Url = Link(route, page, pageSize),
+                Prev = Link(nameof(GetCategories), page, pageSize, -1, () => page > 0),
+                Next = Link(nameof(GetCategories), page, pageSize, 1, () => page < totalPages - 1),
+                Url = Link(nameof(GetCategories), page, pageSize),
                 Data = data
             };
                        
@@ -62,6 +61,28 @@ namespace WebService.Controllers
             model.Url = Url.Link(nameof(GetCategory), new {id = category.Id});
 
             return Ok(model);
+        }
+
+        [HttpPatch("{id}")]
+        public IActionResult UpdateCategory(int id, [FromBody] JsonPatchDocument<CategoryModel> doc)
+        {
+            var category = _dataService.GetCategory(id);
+            // not a valid id
+            if (category == null) return NotFound();
+
+            // map to the model
+            var model = _mapper.Map<CategoryModel>(category);
+            // apply changes
+            doc.ApplyTo(model);
+
+            // now we want to map in the other direction from - CategoryModel to Category
+            // Add the ReverseMap() to the mapper config in StartUp.CreateMapper()
+            _mapper.Map(model, category);
+
+            // this method is not implemented
+            //_dataService.UpdateCategory(category);
+            
+            return NoContent();
         }
 
         // Helpers 

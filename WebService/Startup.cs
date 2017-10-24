@@ -45,7 +45,8 @@ namespace WebService
         {
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<Category, CategoryModel>();
+                cfg.CreateMap<Category, CategoryModel>()
+                    .ReverseMap();
             });
 
             return config.CreateMapper();
