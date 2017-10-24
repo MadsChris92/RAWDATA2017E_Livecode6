@@ -23,8 +23,23 @@ namespace WebService.Controllers
             if (pageSize > 50) pageSize = 50;
             //pageSize = pageSize > 50 ? 50 : pageSize;
 
-           
-            return Ok(_dataService.GetCategories(page, pageSize));
+            var total = _dataService.GetNumberOfCategories();
+            var totalPages = (int)Math.Ceiling(total / (double)pageSize);
+
+            var data = _dataService.GetCategories(page, pageSize);
+
+            var prev = page > 0 ? "prevurl" : null;
+            var next = page < totalPages - 1 ? "nexturl" : null;
+
+            var result = new
+            {
+                Total = total,
+                Prev = prev,
+                Next = next,
+                Data = data
+            };
+                       
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
