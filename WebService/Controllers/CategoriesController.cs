@@ -16,6 +16,7 @@ namespace WebService.Controllers
         {
             _dataService = dataService;
         }
+
         [HttpGet]
         public IActionResult GetCategories(int page = 0, int pageSize = 2)
         {
@@ -24,6 +25,14 @@ namespace WebService.Controllers
 
            
             return Ok(_dataService.GetCategories(page, pageSize));
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult GetCategory(int id)
+        {
+            var category = _dataService.GetCategory(id);
+            if (category == null) return NotFound();
+            return Ok(category);
         }
     }
 }
