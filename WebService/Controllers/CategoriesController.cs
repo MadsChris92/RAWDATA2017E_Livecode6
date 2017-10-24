@@ -10,14 +10,20 @@ namespace WebService.Controllers
     [Route("api/categories")]
     public class CategoriesController : Controller
     {
+        private readonly DataService _dataService;
+
+        public CategoriesController(DataService dataService)
+        {
+            _dataService = dataService;
+        }
         [HttpGet]
         public IActionResult GetCategories(int page = 0, int pageSize = 2)
         {
             if (pageSize > 50) pageSize = 50;
             //pageSize = pageSize > 50 ? 50 : pageSize;
 
-            var ds = new DataService();
-            return Ok(ds.GetCategories(page, pageSize));
+           
+            return Ok(_dataService.GetCategories(page, pageSize));
         }
     }
 }
