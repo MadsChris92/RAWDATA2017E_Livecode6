@@ -17,7 +17,7 @@ namespace WebService.Controllers
             _dataService = dataService;
         }
 
-        [HttpGet]
+        [HttpGet(Name = nameof(GetCategories))]
         public IActionResult GetCategories(int page = 0, int pageSize = 2)
         {
             if (pageSize > 50) pageSize = 50;
@@ -28,8 +28,15 @@ namespace WebService.Controllers
 
             var data = _dataService.GetCategories(page, pageSize);
 
-            var prev = page > 0 ? "prevurl" : null;
-            var next = page < totalPages - 1 ? "nexturl" : null;
+            
+
+            var prev = page > 0 
+                ? Url.Link(nameof(GetCategories), new { page = page -1, pageSize }) 
+                : null;
+
+            var next = page < totalPages - 1 
+                ? Url.Link(nameof(GetCategories), new { page = page + 1, pageSize }) 
+                : null;
 
             var result = new
             {
@@ -42,7 +49,7 @@ namespace WebService.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = nameof(GetCategory))]
         public IActionResult GetCategory(int id)
         {
             var category = _dataService.GetCategory(id);
