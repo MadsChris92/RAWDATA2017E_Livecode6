@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace DataAccessLayer
 {
-    public class DataService
+    public class DataService : IDataService
     {
         public IList<Category> GetCategories(int page, int pageSize)
         {

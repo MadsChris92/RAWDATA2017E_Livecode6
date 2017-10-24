@@ -1,3 +1,6 @@
+using DataAccessLayer;
+using Microsoft.AspNetCore.Mvc;
+using Moq;
 using System;
 using WebService.Controllers;
 using Xunit;
@@ -9,7 +12,26 @@ namespace WebService.Tests
         [Fact]
         public void GetCategory_ValidId_ReturnsOk()
         {
-            var ctrl = new CategoriesController();
+            var dataServiceMock = new Mock<IDataService>();
+            dataServiceMock.Setup(o => o.GetCategory(It.IsAny<int>())).Returns(new Category());
+
+            var ctrl = new CategoriesController(dataServiceMock.Object);
+
+            var response = ctrl.GetCategory(2);
+
+            Assert.IsType<OkObjectResult>(response);
+        }
+
+        [Fact]
+        public void GetCategory_InvalidId_ReturnsNotFund()
+        {
+            var dataServviceMock = new Mock<IDataService>();
+
+            var ctrl = new CategoriesController(dataServviceMock.Object);
+
+            var response = ctrl.GetCategory(-1);
+
+            Assert.IsType<NotFoundResult>(response);
         }
     }
 }

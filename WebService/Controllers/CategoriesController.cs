@@ -10,9 +10,9 @@ namespace WebService.Controllers
     [Route("api/categories")]
     public class CategoriesController : Controller
     {
-        private readonly DataService _dataService;
+        private readonly IDataService _dataService;
 
-        public CategoriesController(DataService dataService)
+        public CategoriesController(IDataService dataService)
         {
             _dataService = dataService;
         }
