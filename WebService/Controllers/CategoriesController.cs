@@ -66,6 +66,8 @@ namespace WebService.Controllers
         [HttpPatch("{id}")]
         public IActionResult UpdateCategory(int id, [FromBody] JsonPatchDocument<CategoryModel> doc)
         {
+            // This is a example body of a patch: 
+            // [{"op": "replace", "path": "/description", "value": "testing"}]
             var category = _dataService.GetCategory(id);
             // not a valid id
             if (category == null) return NotFound();
