@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using DataAccessLayer;
 using Microsoft.AspNetCore.Mvc;
 using WebService.Models;
@@ -12,10 +13,12 @@ namespace WebService.Controllers
     public class CategoriesController : Controller
     {
         private readonly IDataService _dataService;
+        private readonly IMapper _mapper;
 
-        public CategoriesController(IDataService dataService)
+        public CategoriesController(IDataService dataService, IMapper mapper)
         {
             _dataService = dataService;
+            _mapper = mapper;
         }
 
         [HttpGet(Name = nameof(GetCategories))]
@@ -61,12 +64,8 @@ namespace WebService.Controllers
             var category = _dataService.GetCategory(id);
             if (category == null) return NotFound();
 
-            var model = new CategoryModel
-            {
-                Url = Url.Link(nameof(GetCategory), new { id = category.Id }),
-                Name = category.Name,
-                Description = category.Description
-            };
+            var model = _mapper.Map<CategoryModel>(category);
+            model.Url = Url.Link(nameof(GetCategory), new {id = category.Id});
 
             return Ok(model);
         }
