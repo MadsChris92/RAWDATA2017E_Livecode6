@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using DataAccessLayer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using WebService.Models;
 
 namespace WebService
 {
@@ -17,8 +19,10 @@ namespace WebService
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddAutoMapper();
 
             services.AddSingleton<IDataService, DataService>();
+            services.AddSingleton<IMapper>(CreateMapper());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -35,6 +39,16 @@ namespace WebService
             //{
             //    await context.Response.WriteAsync("Hello World!");
             //});
+        }
+
+        public IMapper CreateMapper()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Category, CategoryModel>();
+            });
+
+            return config.CreateMapper();
         }
     }
 }
