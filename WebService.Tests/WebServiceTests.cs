@@ -14,8 +14,10 @@ namespace WebService.Tests
         {
             var dataServiceMock = new Mock<IDataService>();
             dataServiceMock.Setup(o => o.GetCategory(It.IsAny<int>())).Returns(new Category());
+            var urlHelperMock = new Mock<IUrlHelper>();
 
             var ctrl = new CategoriesController(dataServiceMock.Object);
+            ctrl.Url = urlHelperMock.Object;
 
             var response = ctrl.GetCategory(2);
 
