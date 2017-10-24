@@ -60,7 +60,15 @@ namespace WebService.Controllers
         {
             var category = _dataService.GetCategory(id);
             if (category == null) return NotFound();
-            return Ok(category);
+
+            var model = new CategoryModel
+            {
+                Url = Url.Link(nameof(GetCategory), new { id = category.Id }),
+                Name = category.Name,
+                Description = category.Description
+            };
+
+            return Ok(model);
         }
     }
 }
