@@ -6,5 +6,7 @@ namespace DataAccessLayer
     {
         IList<Category> GetCategories(int page, int pageSize);
         Category GetCategory(int id);
+
+        int GetNumberOfCategories();
     }
 }

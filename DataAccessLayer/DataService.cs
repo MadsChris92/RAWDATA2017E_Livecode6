@@ -25,5 +25,13 @@ namespace DataAccessLayer
                 return db.Categories.Find(id);
             }
         }
+
+        public int GetNumberOfCategories()
+        {
+            using (var db = new NorthwindContext())
+            {
+                return db.Categories.Count();
+            }
+        }
     }
 }
