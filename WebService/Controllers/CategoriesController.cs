@@ -24,11 +24,10 @@ namespace WebService.Controllers
         [HttpGet(Name = nameof(GetCategories))]
         public IActionResult GetCategories(int page = 0, int pageSize = 2)
         {
-            if (pageSize > 50) pageSize = 50;
-            //pageSize = pageSize > 50 ? 50 : pageSize;
-
+            CheckPageSize(ref pageSize);
+            
             var total = _dataService.GetNumberOfCategories();
-            var totalPages = (int)Math.Ceiling(total / (double)pageSize);
+            var totalPages = GetTotalPages(pageSize, total);
 
             var data = _dataService.GetCategories(page, pageSize)
                 .Select(x => new SimpleCategoryModel
@@ -37,21 +36,16 @@ namespace WebService.Controllers
                     Name = x.Name
                 });
 
-            
-
-            var prev = page > 0 
-                ? Url.Link(nameof(GetCategories), new { page = page -1, pageSize }) 
-                : null;
-
-            var next = page < totalPages - 1 
-                ? Url.Link(nameof(GetCategories), new { page = page + 1, pageSize }) 
-                : null;
+            var route = nameof(GetCategories);
 
             var result = new
             {
                 Total = total,
-                Prev = prev,
-                Next = next,
+                Pages = totalPages,
+                Page = page,
+                Prev = Link(route, page, pageSize, -1, () => page > 0),
+                Next = Link(route, page, pageSize, 1, () => page < totalPages - 1),
+                Url = Link(route, page, pageSize),
                 Data = data
             };
                        
@@ -68,6 +62,27 @@ namespace WebService.Controllers
             model.Url = Url.Link(nameof(GetCategory), new {id = category.Id});
 
             return Ok(model);
+        }
+
+        // Helpers 
+
+        private string Link(string route, int page, int pageSize, int pageInc = 0, Func<bool> f = null)
+        {
+            if (f == null) return Url.Link(route, new { page, pageSize });
+
+            return f()
+                ? Url.Link(route, new { page = page + pageInc, pageSize })
+                : null;
+        }
+
+        private static int GetTotalPages(int pageSize, int total)
+        {
+            return (int)Math.Ceiling(total / (double)pageSize);
+        }
+
+        private static void CheckPageSize(ref int pageSize)
+        {
+            pageSize = pageSize > 50 ? 50 : pageSize;
         }
     }
 }
